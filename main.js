@@ -8,15 +8,16 @@ offers.forEach(offer => {
         observeParent.style.justifyContent = "flex-end";
         // Add filter button
         addFilterButton(observeParent);
-        // Hide if on list
-        let savedLinks = window.localStorage.getItem("links");
-        if (savedLinks) {
-            savedLinks = savedLinks.split(",");
-            const offerLink = offer.querySelector("a.thumb").href;
-            if (savedLinks.includes(offerLink)) {
-                hideOffer(offer);
+        // Hide if offer is on a list
+        chrome.storage.local.get('offers', (result) => {
+            if (result.offers.length) {
+                const offerLink = offer.querySelector("a.thumb").href;
+                if (result.offers.some(offer => offer.link === offerLink)) {
+                    hideOffer(offer);
+                }
             }
-        }
+        });
+
     }
 })
 
@@ -25,28 +26,41 @@ function addFilterButton(parent) {
     button.classList.add('filter-out-btn')
     button.addEventListener("click", (ev) => {
         const btn = ev.target;
-        const offer = btn.closest('tr.wrap');
-        const link = offer.querySelector("a.thumb");
-        saveLink(link.href);
-        hideOffer(offer);
+        const offerDOM = btn.closest('tr.wrap');
+        // Create offer object to save it to filter list
+        const offerObject = {
+            name: offerDOM.querySelector("td.title-cell").innerText,
+            price: offerDOM.querySelector(".price").innerText,
+            location: offerDOM.querySelector('small span').innerText,
+            imageUrl: offerDOM.querySelector("a.thumb img").src,
+            link: offerDOM.querySelector("a.thumb").href,
+        }
+        console.log(offerObject)
+        saveOffer(offerObject);
+        hideOffer(offerDOM);
     })
     parent.append(button);
 }
 
 /**
- * Save unique link to localStorage
- * @param link
+ * Save filtered offer to localStorage
+ * @param offerObj
  */
-function saveLink(link) {
-    let savedLinks = window.localStorage.getItem("links");
-    if (savedLinks) {
-        savedLinks = new Set(savedLinks.split(","));
-        savedLinks.add(link);
-        window.localStorage.setItem("links", Array.from(savedLinks).join(","));
-    } else {
-        window.localStorage.setItem("links", [link].join(","));
+async function saveOffer(offerObj) {
+    let savedOffers = await chrome.storage.local.get('offers');
+    // When user is using extension first time, variable must be declared as array in localStorage
+    if (typeof savedOffers === 'object' && !savedOffers.hasOwnProperty('offers')) {
+        await chrome.storage.local.set({offers: []});
+        savedOffers = await chrome.storage.local.get('offers');
     }
-    console.log("Saved link!");
+    // Change object variable to just array with offers
+    savedOffers = savedOffers.offers;
+    if (savedOffers.length > 0) {
+        savedOffers.unshift(offerObj);
+        await chrome.storage.local.set({offers: savedOffers});
+    } else {
+        await chrome.storage.local.set({offers: [offerObj]});
+    }
 }
 
 function hideOffer(offerRow) {

@@ -9,10 +9,26 @@
 </head>
 <body>
 <h2 class="text-center">olXtension</h2>
-<div class="flex">
+<div class="flex cta">
     <button id="clearList">Wyczyść listę</button>
     <button id="undoAction">Cofnij akcję</button>
 </div>
+<div class="offer-list">
+
+</div>
 <script src="popup.js" defer></script>
+<!-- Offer template for list rendering-->
+<template id="offerTemplate">
+    <div class="flex">
+        <img class="image" src="https://ireland.apollo.olxcdn.com:443/v1/files/7djkjlzozuwp1-PL/image;s=644x461" alt="">
+        <div class="flex-col">
+            <a href="#" class="link">
+                <h3 class="title">Pokój 1-osobowy, 10m2, ul.Dobrego Pasterza/Bitschana</h3>
+            </a>
+            <p class="location">Kraków, Bieńczyce</p>
+            <p class="price"><b>750zł</b></p>
+        </div>
+    </div>
+</template>
 </body>
 </html>
