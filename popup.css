@@ -1,5 +1,27 @@
 body {
     min-width: 400px;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #002f34;
+    color: #23e5db;
+    padding: 2px 0 2px 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header .actions {
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+}
+
+.header .actions button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
 }
 
 .cta {
