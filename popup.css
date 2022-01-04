@@ -45,9 +45,21 @@ p, h3 {
     text-align: center;
 }
 
+.empty-list {
+    font-size: 1.5em;
+    font-weight: 700;
+    text-align: center;
+    color: #8b8b8b;
+    padding: 15px 5px;
+}
+
 .offer-list {
     max-height: 300px;
     overflow-y: auto;
+}
+
+.offer-list .flex {
+    margin: 5px;
 }
 
 .offer-list img {
